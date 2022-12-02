@@ -1,6 +1,6 @@
-import { useState, useEffect,useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { basicSetup } from "codemirror";
-import CodeMirror from '@uiw/react-codemirror';
+import CodeMirror from "@uiw/react-codemirror";
 
 import { StreamLanguage } from "@codemirror/language";
 import { lua } from "@codemirror/legacy-modes/mode/lua";
@@ -12,23 +12,29 @@ function App() {
   const [buffer, setBuffer] = useState("");
   const onChange = useCallback((value, viewUpdate) => {
     setBuffer(value);
-    console.log(value);
   }, []);
   return (
     <div className="App">
       <div className="code" id="codemirror-editor">
-      <CodeMirror
-      value="pewpew.print('hello world')"
-      height="100%"
-      theme={dracula}
-      extensions={[StreamLanguage.define(lua), basicSetup]}
-      onChange={onChange}
-    />
+        <CodeMirror
+          value="pewpew.print('hello world')"
+          height="100%"
+          theme={dracula}
+          spellCheck="false"
+          basicSetup={basicSetup}
+          extensions={[StreamLanguage.define(lua)]}
+          onChange={onChange}
+        />
       </div>
       <div className="view">
         <Pewpew code={code}></Pewpew>
       </div>
-      <button className="runbtn" onClick={() =>{setCode(buffer);}}>
+      <button
+        className="runbtn"
+        onClick={() => {
+          setCode(buffer);
+        }}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
