@@ -1,5 +1,4 @@
 import { useState, useEffect,useCallback } from "react";
-import reactLogo from "./assets/react.svg";
 import { basicSetup } from "codemirror";
 import CodeMirror from '@uiw/react-codemirror';
 

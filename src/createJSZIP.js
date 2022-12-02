@@ -1,4 +1,4 @@
-import * as zip from "jszip";
+import zip from "jszip";
 
 //function to create zip file
 export default function createJSZIP(levelcode, callback = ()=>{}) {

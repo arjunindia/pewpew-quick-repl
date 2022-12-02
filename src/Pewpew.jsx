@@ -1,4 +1,4 @@
-import {useState, useEffect } from "react";
+import {useState, useEffect, useRef } from "react";
 import createJSZIP from "./createJSZIP"
 
 import FileSaver, { saveAs } from 'file-saver';
@@ -7,6 +7,7 @@ import FileSaver, { saveAs } from 'file-saver';
 export default function Pewpew({code}) {
   const [src,setSrc] = useState("./engine/index.html");
   const [arrayBuffer, setArrayBuffer] = useState(null);
+  const iframeRef = useRef(null);
 useEffect(
     () => {
       createJSZIP(code,(content)=>{
@@ -27,12 +28,13 @@ useEffect(() => {
       {arrayBuffer!==null &&
       <iframe
       key={arrayBuffer}
+      ref={iframeRef}
       src="./engine/index.html"
       title="Pewpew"
       data-code={code}
       onLoad={() => {
       
-        this.contentWindow.postMessage({
+        iframeRef.current.contentWindow.postMessage({
           type: "code",
           code: arrayBuffer,
         });
