@@ -24,6 +24,7 @@ body {
 }
 .cm-theme {
   height: 100%;
+
 }
 .iframe,
 .iframe > * {
@@ -52,5 +53,6 @@ body {
   transition: all 100ms;
 }
 .code{
-  overflow-x: scroll;
+ max-width: 50%;
+
 }
