@@ -138,7 +138,6 @@
   </div>
 
   <script type='text/javascript'>
-    // iframe document code
 
     // Workaround emscripten limitation to change the canvas'
     // antialias flag.
@@ -226,13 +225,7 @@
   </script>
 
   <script>
-    var initializeIframe = true;
-    var file = '';
-    function receive(event) {
-      if  (event.data.type==="code"){
-        if  (initializeIframe) {
-         file = event.data.code;
-        try {
+    try {
       WebAssembly;
       var xhr = new XMLHttpRequest();
       xhr.open('GET', 'pewengine.wasm', true);
@@ -247,12 +240,6 @@
     } catch (e) {
       alert("Failed to load webasm.");
     }
-      }
-      initializeIframe = false;
-      }
-}
-window.addEventListener('message', receive);
-
 
     const element_that_makes_sound_on_click = document.querySelector('canvas');
     let AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -278,6 +265,26 @@ window.addEventListener('message', receive);
       source.start();
       element_that_makes_sound_on_click.onclick = null;
     }
+  </script>
+  <script defer>
+    window.addEventListener("message", (event) => {
+        // extract the data from the message event
+        const { data } = event;
+        const { type, level } = data;
+        if (type === "log") {
+            console.log(level);
+        }
+        if (type === "level"){
+          var array = new Uint8Array(level);
+          var heapSpace = Module._malloc(array.length * array.BYTES_PER_ELEMENT);
+          Module.HEAP8.set(array, heapSpace);
+          Module['__Z9LoadLevelmi'](heapSpace, array.length);
+        }
+      });
+      
+      window.addEventListener("load", (event) => {
+        parent.postMessage({ type: "ready" }, "*");
+      });
   </script>
 </body>
 

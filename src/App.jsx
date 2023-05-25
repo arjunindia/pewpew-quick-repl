@@ -1,11 +1,11 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import { basicSetup } from "codemirror";
 import CodeMirror from "@uiw/react-codemirror";
 
 import { StreamLanguage } from "@codemirror/language";
 import { lua } from "@codemirror/legacy-modes/mode/lua";
 import { dracula } from "thememirror";
-import Pewpew from "./Pewpew";
+import {PewPewString} from "react-pewpew"
 
 function App() {
   const [code, setCode] = useState("pewpew.print('hello world')");
@@ -27,7 +27,7 @@ function App() {
         />
       </div>
       <div className="view">
-        <Pewpew code={code}></Pewpew>
+        <PewPewString style={{width:"100%",height:"100%"}} level={code} />
       </div>
       <button
         className="runbtn"
