@@ -2,11 +2,31 @@ import { useState, useCallback } from "react";
 import { basicSetup } from "codemirror";
 import CodeMirror from "@uiw/react-codemirror";
 
-import { StreamLanguage } from "@codemirror/language";
+import { StreamLanguage,syntaxTree } from "@codemirror/language";
 import { lua } from "@codemirror/legacy-modes/mode/lua";
 import { dracula } from "thememirror";
 import {PewPewString} from "react-pewpew"
 import { useHotkeys } from 'react-hotkeys-hook'
+import { autocompletion } from '@codemirror/autocomplete';
+import { completions } from "./autocompletes";
+
+const tagOptions = 
+  completions
+.map((tag) => ({ label: "pewpew."+tag.label, type: "keyword", info: tag.info }));
+
+
+function myCompletions(context) {
+  let nodeBefore = syntaxTree(context.state).resolveInner(context.pos, -1)
+  let textBefore = context.state.sliceDoc(nodeBefore.from, context.pos)
+  let tagBefore = /pewpew\w*$/.exec(textBefore)
+  if (!tagBefore && !context.explicit) return null
+  return {
+    from: tagBefore ? nodeBefore.from + tagBefore.index : context.pos,
+    options: tagOptions,
+    validFor: /^(pewpew\w*)?$/
+  }
+}
+
 
 function App() {
   const [code, setCode] = useState("pewpew.print('hello world')");
@@ -22,6 +42,8 @@ function App() {
     <div className="App">
       <div className="code" id="codemirror-editor">
         <CodeMirror
+        basicSetup={basicSetup}
+
           value={`
 -- Set how large the level will be.
 pewpew.set_level_size(500fx, 500fx)
@@ -61,8 +83,14 @@ pewpew.add_update_callback(level_tick)
           height="100%"
           theme={dracula}
           spellCheck="false"
-          basicSetup={basicSetup}
-          extensions={[StreamLanguage.define(lua)]}
+          extensions={
+            [
+              StreamLanguage.define(lua),
+              autocompletion({
+                override: [myCompletions]
+              })
+            ]
+          }
           onChange={onChange}
         />
       </div>
